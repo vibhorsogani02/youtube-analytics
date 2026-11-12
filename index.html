@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090a12">\n<meta name="description" content="A polished YouTube creator analytics dashboard for channel performance, videos and audience insights.">\n<title>Creator Studio · YouTube Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@11.2.0/dist/css/shepherd.css">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="orb o1"></div><div class="orb o2"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><span class="logo">▶</span><b>Creator<span>Studio</span></b></div>
+  <nav id="nav">
+    <button class="nav-btn active" data-view="dashboard"><i>◧</i>Dashboard</button>
+    <button class="nav-btn" data-view="analytics"><i>◔</i>Analytics</button>
+    <button class="nav-btn" data-view="videos"><i>▣</i>Videos</button>
+    <button class="nav-btn" data-view="audience"><i>◉</i>Audience</button>
+    <button class="nav-btn" data-view="settings"><i>⚙</i>Settings</button>
+    <button class="nav-btn" data-view="help"><i>?</i>Help</button>
+  </nav>
+  <div class="side-foot glass" id="channelChip">
+    <div class="avatar" id="chAvatar">N</div>
+    <div><b id="chName">Loading…</b><small id="chMode" class="muted">—</small></div>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<main class="main">
+  <header class="topbar">
+    <button class="icon-btn menu" id="menuBtn" aria-label="Open menu">☰</button>
+    <div><h1 id="viewTitle">Dashboard</h1><p class="muted" id="viewSub">Your channel at a glance</p></div>
+    <div class="top-actions">
+      <div class="range" id="range" role="group" aria-label="Date range">
+        <button data-r="7">7D</button><button data-r="30" class="active">30D</button><button data-r="90">90D</button>
+      </div>
+      <button class="icon-btn" id="refreshBtn" title="Refresh data" aria-label="Refresh">⟳</button>
+      <button class="btn ghost" id="tourBtn">Take a tour</button>
+    </div>
+  </header>
+
+  <div class="banner" id="banner" hidden></div>
+
+  <!-- DASHBOARD -->
+  <section class="view active" id="view-dashboard">
+    <div class="cards" id="cards"></div>
+    <div class="grid two">
+      <div class="glass panel" id="viewsPanel"><div class="ph"><h3>Views</h3><span class="chip" id="viewsDelta"></span></div><div class="cv"><canvas id="viewsChart"></canvas></div></div>
+      <div class="glass panel" id="subsPanel"><div class="ph"><h3>Subscriber growth</h3><span class="chip" id="subsDelta"></span></div><div class="cv"><canvas id="subsChart"></canvas></div></div>
+    </div>
+    <div class="glass panel" id="topPanel">
+      <div class="ph"><h3>Top-performing videos</h3><button class="link" data-go="videos">See all videos</button></div>
+      <div class="vgrid" id="topVideos"></div>
+    </div>
+  </section>
+
+  <!-- ANALYTICS -->
+  <section class="view" id="view-analytics">
+    <div class="grid two">
+      <div class="glass panel"><div class="ph"><h3>Estimated watch time (hours)</h3></div><div class="cv"><canvas id="watchChart"></canvas></div></div>
+      <div class="glass panel"><div class="ph"><h3>Traffic sources</h3></div><div class="cv"><canvas id="trafficChart"></canvas></div></div>
+    </div>
+    <div class="glass panel"><div class="ph"><h3>Engagement summary</h3></div><div class="stats" id="engStats"></div></div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="view" id="view-videos">
+    <div class="glass panel">
+      <div class="ph tools">
+        <input type="search" id="vSearch" placeholder="Search videos…" aria-label="Search videos">
+        <select id="vSort" aria-label="Sort videos"><option value="views">Most views</option><option value="likes">Most likes</option><option value="title">Title A–Z</option></select>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Video</th><th>Views</th><th>Likes</th><th>Like rate</th></tr></thead><tbody id="vTable"></tbody></table></div>
+      <div id="vEmpty"></div>
+    </div>
+  </section>
+
+  <!-- AUDIENCE -->
+  <section class="view" id="view-audience">
+    <div class="grid three">
+      <div class="glass panel"><div class="ph"><h3>Age groups</h3></div><div class="cv sm"><canvas id="ageChart"></canvas></div></div>
+      <div class="glass panel"><div class="ph"><h3>Top countries</h3></div><div class="cv sm"><canvas id="geoChart"></canvas></div></div>
+      <div class="glass panel"><div class="ph"><h3>Devices</h3></div><div class="cv sm"><canvas id="devChart"></canvas></div></div>
+    </div>
+    <p class="muted note">Audience breakdowns need the YouTube Analytics API with OAuth, so these figures are illustrative.</p>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="view-settings">
+    <div class="glass panel narrow">
+      <div class="ph"><h3>Connect your channel</h3></div>
+      <label>YouTube Data API v3 key<input type="password" id="apiKey" placeholder="AIza…" autocomplete="off"></label>
+      <label>Channel ID or @handle<input type="text" id="channelId" placeholder="UC… or @mychannel"></label>
+      <div class="row"><button class="btn" id="saveBtn">Save &amp; connect</button><button class="btn ghost" id="demoBtn">Use demo data</button></div>
+      <p class="muted small">Your key is stored only in this browser (localStorage). Leave it empty to explore with demo data.</p>
+    </div>
+  </section>
+
+  <!-- HELP -->
+  <section class="view" id="view-help">
+    <div class="grid two">
+      <div class="glass panel"><div class="ph"><h3>Guided tour</h3></div><p class="muted">New here? A short walkthrough shows you where everything lives.</p><button class="btn" id="tourBtn2">Start the tour</button></div>
+      <div class="glass panel"><div class="ph"><h3>Common questions</h3></div>
+        <details><summary>Where do I get an API key?</summary><p>Open Google Cloud Console, create a project, enable “YouTube Data API v3”, then create an API key under Credentials.</p></details>
+        <details><summary>Where do I find my channel ID?</summary><p>In YouTube Studio go to Settings → Channel → Advanced settings. You can also type your @handle.</p></details>
+        <details><summary>Why is the growth chart a model?</summary><p>The Data API returns totals only. Day-by-day history requires the YouTube Analytics API, so the trend is generated to match your real totals.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/shepherd.js@11.2.0/dist/js/shepherd.min.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
+
